@@ -1,3 +1,4 @@
+import withStylexTurbopack from '@stylexswc/nextjs-plugin/turbopack';
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
@@ -20,4 +21,10 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
 };
 
-export default nextConfig;
+export default withStylexTurbopack({
+  rsOptions: {
+    aliases: { '@/*': ['./*'] },
+    dev: process.env.NODE_ENV !== 'production',
+    unstable_moduleResolution: { type: 'commonJS' },
+  },
+})(nextConfig);

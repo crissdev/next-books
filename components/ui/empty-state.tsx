@@ -1,4 +1,6 @@
+import * as stylex from '@stylexjs/stylex';
 import { BookMark } from '@/components/book-mark';
+import { colors, spacing, typography } from '@/styles/tokens.stylex';
 import type { ReactNode } from 'react';
 
 type Props = {
@@ -7,15 +9,50 @@ type Props = {
   children?: ReactNode;
 };
 
+const styles = stylex.create({
+  body: {
+    color: colors.muted,
+    fontSize: typography.small,
+    lineHeight: '1.5rem',
+    margin: 0,
+  },
+  content: {
+    alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: spacing.three,
+    maxWidth: '24rem',
+  },
+  icon: {
+    height: '2.5rem',
+    marginBottom: spacing.one,
+    width: '2.5rem',
+  },
+  root: {
+    display: 'grid',
+    flex: 1,
+    paddingBlock: spacing.twenty,
+    paddingInline: spacing.six,
+    placeItems: 'center',
+    textAlign: 'center',
+  },
+  title: {
+    color: colors.text,
+    fontSize: typography.small,
+    fontWeight: 500,
+    margin: 0,
+  },
+});
+
 export function EmptyState({ body, children, title }: Props) {
   return (
-    <div className="grid flex-1 place-items-center px-6 py-20 text-center">
-      <div className="flex max-w-sm flex-col items-center gap-3">
-        <BookMark animated className="mb-1 size-10" />
-        <p className="text-sm font-medium">{title}</p>
-        {body ? <p className="text-muted text-sm leading-6">{body}</p> : null}
+    <section {...stylex.props(styles.root)}>
+      <section {...stylex.props(styles.content)}>
+        <BookMark animated xstyle={styles.icon} />
+        <p {...stylex.props(styles.title)}>{title}</p>
+        {body ? <p {...stylex.props(styles.body)}>{body}</p> : null}
         {children}
-      </div>
-    </div>
+      </section>
+    </section>
   );
 }

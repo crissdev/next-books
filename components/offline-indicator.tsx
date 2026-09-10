@@ -1,12 +1,15 @@
 'use client';
 
+import * as stylex from '@stylexjs/stylex';
 import { WifiOff } from 'lucide-react';
 import { useOffline } from 'next/offline';
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
-// `experimental.useOffline` only reports the state; the surfacing is ours. One
-// sticky toast, dismissed on reconnect, so a flaky connection doesn't stack up.
+const styles = stylex.create({
+  icon: { height: '1rem', width: '1rem' },
+});
+
 export function OfflineIndicator() {
   const offline = useOffline();
   const toastId = useRef<number | string | undefined>(undefined);
@@ -15,7 +18,7 @@ export function OfflineIndicator() {
     if (offline) {
       toastId.current = toast.error("You're offline — reconnecting…", {
         duration: Infinity,
-        icon: <WifiOff aria-hidden className="size-4" />,
+        icon: <WifiOff {...stylex.props(styles.icon)} aria-hidden />,
       });
     } else if (toastId.current !== undefined) {
       toast.dismiss(toastId.current);

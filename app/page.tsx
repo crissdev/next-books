@@ -1,3 +1,4 @@
+import * as stylex from '@stylexjs/stylex';
 import { Suspense } from 'react';
 import { AnimatedSuspense } from '@/components/ui/animated-suspense';
 import ErrorBoundary from '@/components/ui/error-boundary';
@@ -7,6 +8,38 @@ import { BookGrid, BookGridSkeleton } from '@/features/book/components/book-grid
 import { BookPagination, BookPaginationSkeleton } from '@/features/book/components/book-pagination';
 import { parseSearchParams } from '@/lib/url-state';
 import type { SearchParams } from '@/lib/url-state';
+import { colors, spacing } from '@/styles/tokens.stylex';
+
+const styles = stylex.create({
+  footer: {
+    borderBlockStartColor: colors.divider,
+    borderBlockStartStyle: 'solid',
+    borderBlockStartWidth: 1,
+    marginTop: 'auto',
+    paddingBlock: spacing.three,
+    paddingInline: {
+      '@media (min-width: 640px)': spacing.six,
+      default: spacing.four,
+    },
+  },
+  results: {
+    flex: 1,
+    paddingBlock: spacing.five,
+    paddingInline: {
+      '@media (min-width: 640px)': spacing.six,
+      default: spacing.four,
+    },
+    transitionDuration: '200ms',
+    transitionProperty: 'opacity',
+    transitionTimingFunction: 'ease-out',
+  },
+  root: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+    minHeight: 0,
+  },
+});
 
 export default function Page({ searchParams }: PageProps<'/'>) {
   return (
@@ -14,22 +47,22 @@ export default function Page({ searchParams }: PageProps<'/'>) {
       body="The catalog query failed. Check your database connection and try again."
       title="Can't load books"
     >
-      <div className="flex min-h-0 flex-1 flex-col">
-        <div className="flex-1 px-4 py-5 transition-opacity duration-200 ease-out group-has-[[data-filtering]]:opacity-60 sm:px-6">
+      <section {...stylex.props(styles.root)}>
+        <section {...stylex.props(styles.results)} data-book-results>
           <AnimatedSuspense fallback={<BookGridSkeleton />}>
             {searchParams.then(params => (
               <BookResults searchParams={parseSearchParams(params)} />
             ))}
           </AnimatedSuspense>
-        </div>
-        <footer className="border-divider dark:border-divider-dark mt-auto border-t px-4 py-3 sm:px-6">
+        </section>
+        <footer {...stylex.props(styles.footer)}>
           <Suspense fallback={<BookPaginationSkeleton />}>
             {searchParams.then(params => (
               <BookPagination searchParams={parseSearchParams(params)} />
             ))}
           </Suspense>
         </footer>
-      </div>
+      </section>
     </ErrorBoundary>
   );
 }

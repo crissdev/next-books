@@ -1,12 +1,53 @@
+import * as stylex from '@stylexjs/stylex';
 import { HoverPrefetchLink } from '@/components/ui/hover-prefetch-link';
 import type { BookSummary } from '@/features/book/book-queries';
 import { BookCover, BookCoverSkeleton } from '@/features/book/components/book-cover';
 import { buildHref } from '@/lib/url-state';
 import type { SearchParams } from '@/lib/url-state';
+import { colors, radii, shadows } from '@/styles/tokens.stylex';
 import type { Route } from 'next';
 
 const GRID_SIZES =
   '(min-width: 1280px) 14vw, (min-width: 1024px) 16vw, (min-width: 768px) 20vw, (min-width: 640px) 25vw, 33vw';
+
+const styles = stylex.create({
+  link: {
+    borderRadius: radii.md,
+    boxShadow: {
+      ':hover': { '@media (hover: hover)': shadows.soft },
+      default: 'none',
+    },
+    display: 'block',
+    outline: { ':focus-visible': 'none' },
+    outlineColor: { ':focus-visible': colors.action },
+    outlineOffset: { ':focus-visible': 2 },
+    outlineStyle: { ':focus-visible': 'solid' },
+    outlineWidth: { ':focus-visible': 2 },
+    position: 'relative',
+    transform: {
+      ':hover': { '@media (hover: hover)': 'scale(1.04)' },
+      default: 'none',
+    },
+    transitionDuration: '200ms',
+    transitionProperty: 'transform, box-shadow',
+    transitionTimingFunction: 'ease-out',
+    zIndex: {
+      ':hover': { '@media (hover: hover)': 10 },
+      default: 0,
+    },
+  },
+  srOnly: {
+    border: 0,
+    clip: 'rect(0, 0, 0, 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    whiteSpace: 'nowrap',
+    width: 1,
+  },
+});
 
 type Props = {
   book: BookSummary;
@@ -20,20 +61,15 @@ export function BookCard({ book, eagerPrefetch, priority, searchParams }: Props)
   const href = (back === '/' ? `/${book.id}` : `/${book.id}?${back.slice(2)}`) as Route;
 
   return (
-    <HoverPrefetchLink
-      className="focus-visible:ring-action focus-visible:ring-offset-surface dark:focus-visible:ring-offset-surface-dark group relative block rounded-md transition-transform duration-200 ease-out hover:z-10 hover:scale-[1.04] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
-      eager={eagerPrefetch}
-      href={href}
-    >
+    <HoverPrefetchLink {...stylex.props(styles.link)} eager={eagerPrefetch} href={href}>
       <BookCover
-        className="group-hover:shadow-soft transition-shadow"
         priority={priority}
         sizes={GRID_SIZES}
         src={book.image_url}
         thumbhash={book.thumbhash}
         title={book.title}
       />
-      <span className="sr-only">{book.title}</span>
+      <span {...stylex.props(styles.srOnly)}>{book.title}</span>
     </HoverPrefetchLink>
   );
 }

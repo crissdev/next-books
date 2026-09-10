@@ -1,91 +1,48 @@
-@import 'tailwindcss';
+@layer reset, astryx-base, astryx-theme;
 
-@theme {
-  --color-gray: #a1a1aa;
-  --color-muted: #71717a;
-  --color-divider-dark: #282828;
-  --color-divider: #e4e4e7;
-  --color-card-dark: #181818;
-  --color-card: #f4f4f5;
-  --color-surface-dark: #121212;
-  --color-surface: #fafafa;
+@import '@astryxdesign/core/reset.css';
+@import '@astryxdesign/core/astryx.css';
+@import '@astryxdesign/theme-neutral/theme.css';
 
-  --color-primary: #2563eb;
-  --color-primary-dark: #1d4ed8;
-  --color-primary-darker: #1e40af;
-  --color-accent: #2563eb;
-  --color-accent-hover: #1d4ed8;
-  --color-accent-fade: #2563eb22;
-  --color-action: #2563eb;
-  --color-action-hover: #1d4ed8;
+@stylex;
 
-  --color-success: #0fa958;
-  --color-danger: #e54848;
-  --color-warning: #f5a524;
-
-  --font-mono: var(--font-geist-mono);
-  --font-sans: var(--font-geist-sans);
-
-  --tracking-tight: -0.02em;
-  --tracking-wide: 0.04em;
-
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-
-  --shadow-soft: 0 2px 8px -2px rgb(24 24 27 / 0.12), 0 4px 16px -4px rgb(24 24 27 / 0.1);
+:root {
+  color-scheme: light dark;
 }
 
-@custom-variant dark (&:where(.dark, .dark *));
-
-.dark {
-  --color-accent: #3b82f6;
-  --color-accent-hover: #2563eb;
-  --color-accent-fade: #3b82f622;
-  --color-action: #3b82f6;
-  --color-action-hover: #2563eb;
+:root[data-theme='light'] {
+  color-scheme: light;
 }
 
-@layer base {
-  body {
-    @apply selection:bg-accent bg-surface dark:bg-surface-dark font-sans text-black antialiased selection:text-white dark:text-white;
-  }
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}
 
-  h1 {
-    @apply font-sans text-2xl font-semibold tracking-tight text-black sm:text-3xl dark:text-white;
-  }
+body {
+  margin: 0;
+}
 
-  h2 {
-    @apply font-sans text-base font-semibold tracking-tight text-black dark:text-white;
-  }
+button,
+input,
+select {
+  font: inherit;
+}
 
-  h3 {
-    @apply font-sans text-sm font-semibold tracking-tight text-black dark:text-white;
-  }
+button {
+  cursor: pointer;
+}
 
-  button,
-  input,
-  select {
-    font: inherit;
-  }
+:where(a, button, summary, [role='button']) {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
 
-  button {
-    cursor: pointer;
-  }
+:where(button, summary, [role='button']) {
+  user-select: none;
+}
 
-  :where(a, button, summary, [role='button']) {
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-
-  :where(button, summary, [role='button']) {
-    user-select: none;
-  }
-
-  summary::-webkit-details-marker {
-    display: none;
-  }
+summary::-webkit-details-marker {
+  display: none;
 }
 
 @media (pointer: coarse) {
@@ -104,83 +61,20 @@ input[type='search']::-webkit-search-cancel-button {
   appearance: none;
 }
 
-.skeleton-animation {
-  --skeleton-base: rgb(0 0 0 / 0.055);
-  --skeleton-shine: rgb(0 0 0 / 0.075);
-  background-color: var(--skeleton-base);
-  background-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--skeleton-shine) 45%,
-    var(--skeleton-shine) 55%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
-  background-repeat: no-repeat;
-  animation: skeleton-sweep 1.8s ease-in-out infinite;
+[data-app-shell]:has([data-filtering]) [data-book-results] {
+  opacity: 0.6;
 }
 
-/* A flat, static fill. A grid of 28 covers all sweeping at once reads as flicker,
-   so dense placeholders opt out of the animation entirely. */
-.skeleton-animation.skeleton-subtle {
-  background-image: none;
-  animation: none;
+[data-search-form]:has(input:placeholder-shown) [data-clear-search] {
+  display: none;
 }
 
-.dark .skeleton-animation {
-  --skeleton-base: rgb(255 255 255 / 0.06);
-  --skeleton-shine: rgb(255 255 255 / 0.07);
-}
-
-.skeleton-animation:not([class*='rounded-']) {
-  border-radius: var(--radius-sm);
-}
-
-@keyframes book-mark-draw {
-  from {
-    stroke-dasharray: 0 64;
-    opacity: 0;
-  }
-  to {
-    stroke-dasharray: 64 0;
-    opacity: 1;
-  }
-}
-
-.book-mark-enter path {
-  animation: book-mark-draw 520ms ease-out both;
-}
-
-.book-mark-enter path:nth-child(2) {
-  animation-delay: 90ms;
-}
-
-.book-mark-enter path:nth-child(3) {
-  animation-delay: 180ms;
-}
-
-@keyframes skeleton-sweep {
-  0% {
-    background-position: 150% 0;
-  }
-  100% {
-    background-position: -150% 0;
-  }
-}
-
-/* Range inputs: the native track grey clashes with the accent, so the control is
-   restyled. No filled portion: each of these filters treats a different end as
-   "unfiltered", so a proportional fill would read as backwards on some of them. */
 input[type='range'] {
-  --range-track: var(--color-divider);
+  --range-track: light-dark(#e4e4e7, #282828);
   appearance: none;
   background: transparent;
   width: 100%;
   height: 1.25rem;
-}
-
-.dark input[type='range'] {
-  --range-track: var(--color-divider-dark);
 }
 
 input[type='range']::-webkit-slider-runnable-track {
@@ -194,14 +88,10 @@ input[type='range']::-webkit-slider-thumb {
   margin-top: -0.3125rem;
   height: 1rem;
   width: 1rem;
-  border: 2px solid var(--color-surface);
+  border: 2px solid light-dark(#fafafa, #121212);
   border-radius: 9999px;
-  background: var(--color-action);
+  background: light-dark(#2563eb, #3b82f6);
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
-}
-
-.dark input[type='range']::-webkit-slider-thumb {
-  border-color: var(--color-surface-dark);
 }
 
 input[type='range']::-moz-range-track {
@@ -213,16 +103,12 @@ input[type='range']::-moz-range-track {
 input[type='range']::-moz-range-thumb {
   height: 1rem;
   width: 1rem;
-  border: 2px solid var(--color-surface);
+  border: 2px solid light-dark(#fafafa, #121212);
   border-radius: 9999px;
-  background: var(--color-action);
+  background: light-dark(#2563eb, #3b82f6);
 }
 
-.dark input[type='range']::-moz-range-thumb {
-  border-color: var(--color-surface-dark);
-}
-
-/* let cursor/clicks pass through the snapshot overlay to unnamed live content */
+/* View-transition pseudo-elements are browser-owned and cannot be targeted by StyleX. */
 ::view-transition {
   pointer-events: none;
 }
@@ -230,6 +116,7 @@ input[type='range']::-moz-range-thumb {
 ::view-transition-old(root) {
   display: none;
 }
+
 ::view-transition-new(root) {
   animation: none;
 }
@@ -243,18 +130,13 @@ input[type='range']::-moz-range-thumb {
   z-index: 100;
 }
 
-/* The `toaster` name lives on the always-mounted wrapper in components/toaster.tsx,
-   so a toast is never captured mid-flight by a navigation snapshot. */
 ::view-transition-group(toaster) {
   animation: none;
   z-index: 200;
 }
 
 ::view-transition-old(toaster),
-::view-transition-new(toaster) {
-  animation: none;
-}
-
+::view-transition-new(toaster),
 ::view-transition-old(sidebar),
 ::view-transition-new(sidebar),
 ::view-transition-old(theme-toggle),
@@ -265,32 +147,13 @@ input[type='range']::-moz-range-thumb {
   animation: none;
 }
 
-/* The header has backdrop-filter, so its old snapshot is hidden to avoid a flash. */
-::view-transition-old(site-header) {
-  display: none;
-}
-::view-transition-new(site-header) {
-  animation: none;
-}
-
+::view-transition-old(site-header),
 ::view-transition-old(mobile-sidebar-backdrop) {
   display: none;
 }
 
-.pending-hint {
-  opacity: 0;
-  visibility: hidden;
-}
-
-.pending-hint[data-pending] {
-  visibility: visible;
-  animation: pending-hint-in 200ms ease 100ms forwards;
-}
-
-@keyframes pending-hint-in {
-  to {
-    opacity: 1;
-  }
+::view-transition-new(site-header) {
+  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -299,15 +162,5 @@ input[type='range']::-moz-range-thumb {
   ::view-transition-group(*) {
     animation-duration: 0s !important;
     animation-delay: 0s !important;
-  }
-
-  .skeleton-animation,
-  .book-mark-enter path {
-    animation: none !important;
-  }
-
-  .pending-hint[data-pending] {
-    animation: none;
-    opacity: 1;
   }
 }

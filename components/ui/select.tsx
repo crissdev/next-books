@@ -1,23 +1,71 @@
+import * as stylex from '@stylexjs/stylex';
 import { ChevronDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { colors, radii, spacing, typography } from '@/styles/tokens.stylex';
+import type { StyleXStyles } from '@stylexjs/stylex';
 import type { ComponentProps } from 'react';
 
-export function Select({ children, className, ...props }: ComponentProps<'select'>) {
+const styles = stylex.create({
+  icon: {
+    color: colors.muted,
+    height: '1rem',
+    insetInlineEnd: spacing.twoAndHalf,
+    pointerEvents: 'none',
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: '1rem',
+  },
+  select: {
+    appearance: 'none',
+    backgroundColor: {
+      ':disabled': colors.card,
+      default: colors.input,
+    },
+    borderColor: {
+      ':focus': colors.accent,
+      default: colors.divider,
+    },
+    borderRadius: radii.md,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    boxShadow: {
+      ':focus': `0 0 0 2px ${colors.focusAccent}`,
+      default: 'none',
+    },
+    color: {
+      ':disabled': colors.muted,
+      default: colors.text,
+    },
+    cursor: { ':disabled': 'not-allowed' },
+    fontSize: typography.small,
+    opacity: { ':disabled': 0.6 },
+    outline: { ':focus': 'none' },
+    paddingBlock: spacing.two,
+    paddingInlineEnd: spacing.eight,
+    paddingInlineStart: spacing.three,
+    transitionDuration: '150ms',
+    transitionProperty: 'background-color, border-color, box-shadow',
+    transitionTimingFunction: 'ease',
+    width: '100%',
+  },
+  wrapper: {
+    display: 'block',
+    minWidth: 0,
+    position: 'relative',
+  },
+});
+
+export function Select({
+  children,
+  xstyle,
+  ...props
+}: Omit<ComponentProps<'select'>, 'className' | 'style'> & { xstyle?: StyleXStyles }) {
   return (
-    <span className="relative block min-w-0">
-      <select
-        className={cn(
-          'border-divider focus:border-accent focus:ring-accent/25 dark:border-divider-dark disabled:bg-card disabled:text-muted dark:disabled:bg-card-dark w-full appearance-none rounded-md border bg-white px-3 py-2 pr-8 text-sm text-black transition-colors focus:ring-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60 dark:bg-[#1c1c1c] dark:text-white',
-          className,
-        )}
-        {...props}
-      >
+    <span {...stylex.props(styles.wrapper)}>
+      <select {...stylex.props(styles.select, xstyle)} {...props}>
         {children}
       </select>
-      <ChevronDown
-        aria-hidden
-        className="text-muted pointer-events-none absolute top-1/2 right-2.5 size-4 -translate-y-1/2"
-      />
+      <ChevronDown aria-hidden {...stylex.props(styles.icon)} />
     </span>
   );
 }

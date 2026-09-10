@@ -1,4 +1,7 @@
 allowBuilds:
+  '@astryxdesign/cli': true
+  '@astryxdesign/core': true
+  '@swc/core': true
   bufferutil: false
   esbuild: true
   sharp: true

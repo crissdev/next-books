@@ -1,5 +1,6 @@
 'use client';
 
+import * as stylex from '@stylexjs/stylex';
 import { Search as SearchIcon, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useId, useRef, useTransition } from 'react';
@@ -9,8 +10,45 @@ import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import { useSyncSearchParamToInput } from '@/hooks/use-sync-search-param-to-input';
 import { buildHref, parseSearchParams, withFilters } from '@/lib/url-state';
+import { colors, spacing } from '@/styles/tokens.stylex';
 
 const DEBOUNCE_MS = 220;
+
+const styles = stylex.create({
+  clear: {
+    insetInlineEnd: spacing.oneAndHalf,
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+  },
+  form: { flex: 1, position: 'relative' },
+  icon: { height: '1rem', width: '1rem' },
+  leadingIcon: {
+    alignItems: 'center',
+    color: colors.muted,
+    display: 'flex',
+    height: '1rem',
+    insetInlineStart: spacing.threeAndHalf,
+    justifyContent: 'center',
+    pointerEvents: 'none',
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: '1rem',
+    zIndex: 1,
+  },
+  srOnly: {
+    border: 0,
+    clip: 'rect(0, 0, 0, 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    whiteSpace: 'nowrap',
+    width: 1,
+  },
+});
 
 export function BookSearch() {
   const router = useRouter();
@@ -38,8 +76,9 @@ export function BookSearch() {
 
   return (
     <form
+      {...stylex.props(styles.form)}
       aria-busy={isPending}
-      className="relative flex-1"
+      data-search-form
       data-filtering={isPending ? '' : undefined}
       onSubmit={event => {
         event.preventDefault();
@@ -48,17 +87,13 @@ export function BookSearch() {
       }}
       role="search"
     >
-      <label className="sr-only" htmlFor={inputId}>
+      <label {...stylex.props(styles.srOnly)} htmlFor={inputId}>
         Search books
       </label>
-      <span
-        aria-hidden
-        className="text-muted pointer-events-none absolute top-1/2 left-3.5 flex size-4 -translate-y-1/2 items-center justify-center"
-      >
-        {isPending ? <Spinner className="size-4" /> : <SearchIcon className="size-4" />}
+      <span {...stylex.props(styles.leadingIcon)} aria-hidden>
+        {isPending ? <Spinner xstyle={styles.icon} /> : <SearchIcon {...stylex.props(styles.icon)} />}
       </span>
       <Input
-        className="peer"
         defaultValue=""
         id={inputId}
         name="search"
@@ -74,7 +109,7 @@ export function BookSearch() {
         variant="search"
       />
       <IconButton
-        className="absolute top-1/2 right-1.5 -translate-y-1/2 peer-placeholder-shown:hidden"
+        data-clear-search
         label="Clear search"
         onClick={() => {
           if (timerRef.current) clearTimeout(timerRef.current);
@@ -82,8 +117,9 @@ export function BookSearch() {
           navigate('');
           inputRef.current?.focus();
         }}
+        xstyle={styles.clear}
       >
-        <X className="size-4" />
+        <X {...stylex.props(styles.icon)} />
       </IconButton>
       <SeedFromSearchParam param="search" targetId={inputId} />
     </form>

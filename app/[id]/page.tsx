@@ -1,9 +1,25 @@
+import * as stylex from '@stylexjs/stylex';
 import { AnimatedSuspense } from '@/components/ui/animated-suspense';
 import ErrorBoundary from '@/components/ui/error-boundary';
 import { getBookById } from '@/features/book/book-queries';
 import { BackToBooksLink } from '@/features/book/components/back-to-books-link';
 import { BookDetail, BookDetailSkeleton } from '@/features/book/components/book-detail';
+import { spacing } from '@/styles/tokens.stylex';
 import type { Metadata } from 'next';
+
+const styles = stylex.create({
+  back: { marginBottom: spacing.six },
+  page: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+    paddingBlock: spacing.five,
+    paddingInline: {
+      '@media (min-width: 640px)': spacing.six,
+      default: spacing.four,
+    },
+  },
+});
 
 export async function generateMetadata({ params }: PageProps<'/[id]'>): Promise<Metadata> {
   const { id } = await params;
@@ -13,17 +29,17 @@ export async function generateMetadata({ params }: PageProps<'/[id]'>): Promise<
 
 export default function Page({ params }: PageProps<'/[id]'>) {
   return (
-    <div className="flex flex-1 flex-col px-4 py-5 sm:px-6">
-      <BackToBooksLink className="mb-6" />
+    <section {...stylex.props(styles.page)}>
+      <BackToBooksLink xstyle={styles.back} />
       <ErrorBoundary body="We couldn't load this book's details." title="Can't load book">
-        <div>
+        <section>
           <AnimatedSuspense fallback={<BookDetailSkeleton />}>
             {params.then(({ id }) => (
               <BookDetail id={id} />
             ))}
           </AnimatedSuspense>
-        </div>
+        </section>
       </ErrorBoundary>
-    </div>
+    </section>
   );
 }

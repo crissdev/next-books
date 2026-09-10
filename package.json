@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
+  "astryx": {
+    "theme": "neutral"
+  },
   "devEngines": {
     "runtime": {
       "name": "node",
@@ -34,10 +37,12 @@
   },
   "dependencies": {
     "@ariakit/react": "^0.4.39",
+    "@astryxdesign/core": "^0.5.4",
+    "@astryxdesign/theme-neutral": "^0.5.4",
     "@neondatabase/serverless": "^1.1.0",
+    "@stylexjs/stylex": "^0.19.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "clsx": "^2.1.1",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.43.0",
@@ -48,14 +53,15 @@
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",
     "sonner": "^2.0.8",
-    "tailwind-merge": "^3.6.0",
     "thumbhash": "^0.1.1",
     "unlazy": "^2.0.1"
   },
   "devDependencies": {
+    "@astryxdesign/cli": "^0.5.4",
     "@next/playwright": "16.4.0-canary.25",
     "@playwright/test": "^1.63.0",
-    "@tailwindcss/postcss": "^4.3.3",
+    "@stylexswc/nextjs-plugin": "^0.18.6",
+    "@stylexswc/postcss-plugin": "^0.18.6",
     "@types/node": "^26.5.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -68,9 +74,7 @@
     "eslint-plugin-autofix": "^2.2.0",
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "prettier": "^3.9.6",
-    "prettier-plugin-tailwindcss": "^0.8.1",
     "sharp": "^0.35.4",
-    "tailwindcss": "^4.3.3",
     "tsx": "^4.23.13",
     "typescript": "^6.0.3"
   }

@@ -1,5 +1,6 @@
 'use client';
 
+import * as stylex from '@stylexjs/stylex';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useOptimistic, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
@@ -21,8 +22,89 @@ import {
 } from '@/features/book/book-constants';
 import { buildHref, parseSearchParams, withFilters } from '@/lib/url-state';
 import type { SearchParams } from '@/lib/url-state';
+import { colors, radii, spacing, typography } from '@/styles/tokens.stylex';
 
 type FilterAction = { patch: Partial<SearchParams>; type: 'change' } | { type: 'reset' };
+
+const styles = stylex.create({
+  controls: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: spacing.six,
+  },
+  field: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: spacing.two,
+  },
+  fieldset: {
+    border: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: spacing.two,
+    margin: 0,
+    minWidth: 0,
+    padding: 0,
+  },
+  footer: {
+    borderBlockStartColor: colors.divider,
+    borderBlockStartStyle: 'solid',
+    borderBlockStartWidth: 1,
+    paddingTop: spacing.three,
+  },
+  fullWidth: { width: '100%' },
+  label: {
+    color: colors.muted,
+    fontSize: typography.tiny,
+    fontWeight: 600,
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+  },
+  legend: {
+    color: colors.muted,
+    fontSize: typography.tiny,
+    fontWeight: 600,
+    letterSpacing: '0.04em',
+    marginBottom: spacing.two,
+    padding: 0,
+    textTransform: 'uppercase',
+  },
+  listLabel: {
+    alignItems: 'center',
+    backgroundColor: {
+      ':hover': { '@media (hover: hover)': colors.card },
+      default: 'transparent',
+    },
+    borderRadius: radii.md,
+    cursor: 'pointer',
+    display: 'flex',
+    fontSize: typography.small,
+    gap: spacing.twoAndHalf,
+    marginInline: '-0.5rem',
+    paddingBlock: spacing.oneAndHalf,
+    paddingInline: spacing.two,
+    transitionDuration: '150ms',
+    transitionProperty: 'background-color',
+    transitionTimingFunction: 'ease',
+  },
+  root: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'column',
+    minHeight: 0,
+  },
+  scroll: {
+    flex: 1,
+    minHeight: 0,
+    overflowX: 'hidden',
+    overflowY: 'auto',
+    overscrollBehavior: 'contain',
+    paddingBottom: spacing.six,
+    paddingInline: spacing.one,
+    scrollbarGutter: 'stable',
+    touchAction: 'pan-y',
+  },
+});
 
 function filterReducer(filters: SearchParams, action: FilterAction): SearchParams {
   return action.type === 'reset' ? {} : withFilters(filters, action.patch);
@@ -48,9 +130,9 @@ function BookFiltersForm({ idPrefix, initialParams }: { idPrefix: string; initia
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col" data-filtering={isPending ? '' : undefined}>
-      <div className="min-h-0 flex-1 touch-pan-y [scrollbar-gutter:stable] overflow-x-hidden overflow-y-auto overscroll-contain px-1 pb-6">
-        <div className="flex flex-col gap-6">
+    <section {...stylex.props(styles.root)} data-filtering={isPending ? '' : undefined}>
+      <section {...stylex.props(styles.scroll)}>
+        <section {...stylex.props(styles.controls)}>
           <Range
             hint={
               <>
@@ -96,11 +178,8 @@ function BookFiltersForm({ idPrefix, initialParams }: { idPrefix: string; initia
             values={PAGE_FILTER_VALUES}
           />
 
-          <div className="flex flex-col gap-2">
-            <label
-              className="text-muted text-xs font-semibold tracking-wide uppercase"
-              htmlFor={`${idPrefix}-filter-language`}
-            >
+          <section {...stylex.props(styles.field)}>
+            <label {...stylex.props(styles.label)} htmlFor={`${idPrefix}-filter-language`}>
               Language
             </label>
             <Select
@@ -114,15 +193,12 @@ function BookFiltersForm({ idPrefix, initialParams }: { idPrefix: string; initia
                 </option>
               ))}
             </Select>
-          </div>
+          </section>
 
-          <fieldset className="flex flex-col gap-2">
-            <legend className="text-muted mb-2 text-xs font-semibold tracking-wide uppercase">Book lists</legend>
+          <fieldset {...stylex.props(styles.fieldset)}>
+            <legend {...stylex.props(styles.legend)}>Book lists</legend>
             {LISTS.map(list => (
-              <label
-                className="hover:bg-card dark:hover:bg-card-dark -mx-2 flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm transition-colors"
-                key={list.name}
-              >
+              <label {...stylex.props(styles.listLabel)} key={list.name}>
                 <Input
                   checked={filters.list === list.slug}
                   onChange={() => toggleList(list.slug)}
@@ -133,13 +209,12 @@ function BookFiltersForm({ idPrefix, initialParams }: { idPrefix: string; initia
               </label>
             ))}
           </fieldset>
-        </div>
-      </div>
+        </section>
+      </section>
 
       {activeCount > 0 ? (
-        <div className="border-divider dark:border-divider-dark border-t pt-3">
+        <footer {...stylex.props(styles.footer)}>
           <Button
-            className="w-full"
             onClick={() =>
               startTransition(() => {
                 dispatch({ type: 'reset' });
@@ -147,12 +222,13 @@ function BookFiltersForm({ idPrefix, initialParams }: { idPrefix: string; initia
               })
             }
             variant="secondary"
+            xstyle={styles.fullWidth}
           >
             Clear all filters
           </Button>
-        </div>
+        </footer>
       ) : null}
-    </div>
+    </section>
   );
 }
 

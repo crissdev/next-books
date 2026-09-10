@@ -1,8 +1,10 @@
+import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { createPngDataUri } from 'unlazy/thumbhash';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EMPTY_IMAGE_URL, getLargeBookImageUrl } from '@/features/book/book-constants';
-import { cn } from '@/lib/utils';
+import { colors, radii } from '@/styles/tokens.stylex';
+import type { StyleXStyles } from '@stylexjs/stylex';
 
 type Props = {
   title: string;
@@ -10,26 +12,38 @@ type Props = {
   thumbhash: string | null;
   sizes: string;
   priority?: boolean;
-  className?: string;
+  xstyle?: StyleXStyles;
 };
 
-export function BookCover({ className, priority, sizes, src, thumbhash, title }: Props) {
+const styles = stylex.create({
+  cover: {
+    aspectRatio: '2 / 3',
+    backgroundColor: colors.card,
+    borderRadius: radii.md,
+    overflow: 'hidden',
+    position: 'relative',
+    width: '100%',
+  },
+  image: { objectFit: 'cover' },
+});
+
+export function BookCover({ priority, sizes, src, thumbhash, title, xstyle }: Props) {
   return (
-    <div className={cn('bg-card dark:bg-card-dark relative aspect-[2/3] w-full overflow-hidden rounded-md', className)}>
+    <section {...stylex.props(styles.cover, xstyle)}>
       <Image
+        {...stylex.props(styles.image)}
         alt={title}
         blurDataURL={thumbhash ? createPngDataUri(thumbhash) : undefined}
-        className="object-cover"
         fill
         placeholder={thumbhash ? 'blur' : 'empty'}
         priority={priority}
         sizes={sizes}
         src={getLargeBookImageUrl(src ?? EMPTY_IMAGE_URL)}
       />
-    </div>
+    </section>
   );
 }
 
-export function BookCoverSkeleton({ className }: { className?: string }) {
-  return <Skeleton className={cn('skeleton-subtle aspect-[2/3] w-full rounded-md', className)} />;
+export function BookCoverSkeleton({ xstyle }: { xstyle?: StyleXStyles }) {
+  return <Skeleton subtle xstyle={[styles.cover, xstyle]} />;
 }

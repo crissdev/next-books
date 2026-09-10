@@ -1,10 +1,28 @@
+import * as stylex from '@stylexjs/stylex';
+import { colors, spacing, typography } from '@/styles/tokens.stylex';
+
+const styles = stylex.create({
+  count: {
+    fontSize: typography.twoXl,
+    fontVariantNumeric: 'tabular-nums',
+    fontWeight: 600,
+    letterSpacing: '-0.02em',
+    margin: 0,
+  },
+  description: {
+    color: colors.muted,
+    fontSize: typography.tiny,
+    lineHeight: '1.25rem',
+    marginBlockEnd: 0,
+    marginBlockStart: spacing.one,
+  },
+});
+
 export function CatalogSize() {
   return (
-    <div>
-      <p className="text-2xl font-semibold tracking-tight tabular-nums">2M+</p>
-      <p className="text-muted mt-1 text-xs leading-5">
-        books from Goodreads. Built on Next.js 16.3 Instant Navigations.
-      </p>
-    </div>
+    <section>
+      <p {...stylex.props(styles.count)}>2M+</p>
+      <p {...stylex.props(styles.description)}>books from Goodreads. Built on Next.js 16.3 Instant Navigations.</p>
+    </section>
   );
 }
