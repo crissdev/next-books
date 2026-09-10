@@ -11,10 +11,11 @@ const styles = stylex.create({
     display: 'grid',
     gap: spacing.four,
     gridTemplateColumns: {
-      '@media (min-width: 1024px)': 'repeat(6, minmax(0, 1fr))',
-      '@media (min-width: 1280px)': 'repeat(7, minmax(0, 1fr))',
       '@media (min-width: 640px)': 'repeat(4, minmax(0, 1fr))',
       '@media (min-width: 768px)': 'repeat(5, minmax(0, 1fr))',
+      /* eslint-disable-next-line sort-keys-fix/sort-keys-fix */
+      '@media (min-width: 1024px)': 'repeat(6, minmax(0, 1fr))',
+      '@media (min-width: 1280px)': 'repeat(7, minmax(0, 1fr))',
       default: 'repeat(3, minmax(0, 1fr))',
     },
   },
