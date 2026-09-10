@@ -85,6 +85,7 @@ const styles = stylex.create({
     fontSize: typography.tiny,
     fontWeight: 600,
     letterSpacing: '0.04em',
+    lineHeight: typography.tinyLineHeight,
     marginBlockEnd: spacing.four,
     marginBlockStart: spacing.five,
     textTransform: 'uppercase',

@@ -1,11 +1,12 @@
 'use client';
 
 import { Button } from '@astryxdesign/core/Button';
-import { CheckboxInput } from '@astryxdesign/core/CheckboxInput';
 import { Selector } from '@astryxdesign/core/Selector';
+import { Stack } from '@astryxdesign/core/Stack';
 import * as stylex from '@stylexjs/stylex';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useOptimistic, useTransition } from 'react';
+import { Input } from '@/components/ui/input';
 import { Range } from '@/components/ui/range';
 import {
   LANGUAGES,
@@ -22,11 +23,33 @@ import {
 } from '@/features/book/book-constants';
 import { buildHref, parseSearchParams, withFilters } from '@/lib/url-state';
 import type { SearchParams } from '@/lib/url-state';
-import { colors, spacing, typography } from '@/styles/tokens.stylex';
+import { colors, radii, spacing, typography } from '@/styles/tokens.stylex';
 
 type FilterAction = { patch: Partial<SearchParams>; type: 'change' } | { type: 'reset' };
 
 const styles = stylex.create({
+  checkbox: {
+    flexShrink: 0,
+  },
+  checkboxRow: {
+    alignItems: 'center',
+    backgroundColor: {
+      ':hover': { '@media (hover: hover)': colors.card },
+      default: 'transparent',
+    },
+    borderRadius: radii.sm,
+    cursor: 'pointer',
+    display: 'flex',
+    fontSize: typography.small,
+    gap: spacing.twoAndHalf,
+    lineHeight: typography.smallLineHeight,
+    marginInline: `calc(-1 * ${spacing.two})`,
+    paddingBlock: spacing.oneAndHalf,
+    paddingInline: spacing.two,
+    transitionDuration: '150ms',
+    transitionProperty: 'background-color',
+    transitionTimingFunction: 'ease',
+  },
   controls: {
     display: 'flex',
     flexDirection: 'column',
@@ -52,6 +75,7 @@ const styles = stylex.create({
     fontSize: typography.tiny,
     fontWeight: 600,
     letterSpacing: '0.04em',
+    lineHeight: typography.tinyLineHeight,
     marginBottom: spacing.two,
     padding: 0,
     textTransform: 'uppercase',
@@ -72,6 +96,36 @@ const styles = stylex.create({
     paddingInline: spacing.one,
     scrollbarGutter: 'stable',
     touchAction: 'pan-y',
+  },
+  selectLabel: {
+    color: colors.muted,
+    fontSize: typography.tiny,
+    fontWeight: 600,
+    letterSpacing: '0.04em',
+    lineHeight: typography.tinyLineHeight,
+    textTransform: 'uppercase',
+  },
+  selector: {
+    backgroundColor: colors.input,
+    borderColor: {
+      ':focus-within': colors.accent,
+      default: colors.divider,
+    },
+    borderRadius: radii.sm,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    boxShadow: {
+      ':focus-within': `0 0 0 2px ${colors.focusAccent}`,
+      default: 'none',
+    },
+    color: colors.text,
+    fontSize: typography.small,
+    height: `calc(${spacing.six} + ${spacing.threeAndHalf})`,
+    lineHeight: typography.smallLineHeight,
+    transitionDuration: '150ms',
+    transitionProperty: 'background-color, border-color, box-shadow',
+    transitionTimingFunction: 'ease',
+    width: '100%',
   },
 });
 
@@ -132,28 +186,37 @@ function BookFiltersForm({ idPrefix, initialParams }: { idPrefix: string; initia
             values={PAGE_FILTER_VALUES}
           />
 
-          <Selector
-            id={`${idPrefix}-filter-language`}
-            label="Language"
-            onChange={language => commit({ language })}
-            options={[...LANGUAGES]}
-            presentation="adaptive"
-            size="sm"
-            value={filters.language ?? 'en'}
-            width="100%"
-          />
+          <Stack gap={2} width="100%">
+            <label {...stylex.props(styles.selectLabel)} htmlFor={`${idPrefix}-filter-language`}>
+              Language
+            </label>
+            <Selector
+              id={`${idPrefix}-filter-language`}
+              isLabelHidden
+              label="Language"
+              onChange={language => commit({ language })}
+              options={[...LANGUAGES]}
+              presentation="adaptive"
+              size="sm"
+              value={filters.language ?? 'en'}
+              width="100%"
+              xstyle={styles.selector}
+            />
+          </Stack>
 
           <fieldset {...stylex.props(styles.fieldset)}>
             <legend {...stylex.props(styles.legend)}>Book lists</legend>
             {LISTS.map(list => (
-              <CheckboxInput
-                key={list.name}
-                label={list.name}
-                onChange={() => toggleList(list.slug)}
-                size="sm"
-                value={filters.list === list.slug}
-                width="100%"
-              />
+              <label {...stylex.props(styles.checkboxRow)} key={list.name}>
+                <Input
+                  checked={filters.list === list.slug}
+                  onChange={() => toggleList(list.slug)}
+                  type="checkbox"
+                  variant="checkbox"
+                  xstyle={styles.checkbox}
+                />
+                {list.name}
+              </label>
             ))}
           </fieldset>
         </section>

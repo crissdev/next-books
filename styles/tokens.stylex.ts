@@ -55,9 +55,13 @@ export const spacing = stylex.defineVars({
 
 export const typography = stylex.defineVars({
   base: '1rem',
+  hint: '0.6875rem',
   large: '1.125rem',
   small: '0.875rem',
+  smallLineHeight: '1.25rem',
   threeXl: '1.875rem',
   tiny: '0.75rem',
+  tinyLineHeight: '1rem',
   twoXl: '1.5rem',
+  twoXlLineHeight: '2rem',
 });

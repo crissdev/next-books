@@ -7,6 +7,7 @@ const styles = stylex.create({
     fontVariantNumeric: 'tabular-nums',
     fontWeight: 600,
     letterSpacing: '-0.02em',
+    lineHeight: typography.twoXlLineHeight,
     margin: 0,
   },
   description: {
