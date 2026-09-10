@@ -1,13 +1,14 @@
 'use client';
 
+import { Icon } from '@astryxdesign/core/Icon';
+import { IconButton } from '@astryxdesign/core/IconButton';
+import { Spinner } from '@astryxdesign/core/Spinner';
 import * as stylex from '@stylexjs/stylex';
 import { Search as SearchIcon, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useId, useRef, useTransition } from 'react';
 import { SeedFromSearchParam } from '@/components/scripts/seed-from-search-param';
-import { IconButton } from '@/components/ui/icon-button';
 import { Input } from '@/components/ui/input';
-import { Spinner } from '@/components/ui/spinner';
 import { useSyncSearchParamToInput } from '@/hooks/use-sync-search-param-to-input';
 import { buildHref, parseSearchParams, withFilters } from '@/lib/url-state';
 import { colors, spacing } from '@/styles/tokens.stylex';
@@ -22,7 +23,6 @@ const styles = stylex.create({
     transform: 'translateY(-50%)',
   },
   form: { flex: 1, position: 'relative' },
-  icon: { height: '1rem', width: '1rem' },
   leadingIcon: {
     alignItems: 'center',
     color: colors.muted,
@@ -91,7 +91,7 @@ export function BookSearch() {
         Search books
       </label>
       <span {...stylex.props(styles.leadingIcon)} aria-hidden>
-        {isPending ? <Spinner xstyle={styles.icon} /> : <SearchIcon {...stylex.props(styles.icon)} />}
+        {isPending ? <Spinner size="sm" /> : <Icon color="secondary" icon={SearchIcon} size="sm" />}
       </span>
       <Input
         defaultValue=""
@@ -110,6 +110,7 @@ export function BookSearch() {
       />
       <IconButton
         data-clear-search
+        icon={<Icon icon={X} size="sm" />}
         label="Clear search"
         onClick={() => {
           if (timerRef.current) clearTimeout(timerRef.current);
@@ -117,10 +118,10 @@ export function BookSearch() {
           navigate('');
           inputRef.current?.focus();
         }}
+        size="sm"
+        variant="ghost"
         xstyle={styles.clear}
-      >
-        <X {...stylex.props(styles.icon)} />
-      </IconButton>
+      />
       <SeedFromSearchParam param="search" targetId={inputId} />
     </form>
   );

@@ -241,7 +241,7 @@ function BookSidebarContent({ idPrefix, mobile = false }: { idPrefix: string; mo
       </ErrorBoundary>
       {mobile ? null : (
         <footer {...stylex.props(styles.sidebarFooter)}>
-          <ThemeToggle variant="inline" />
+          <ThemeToggle />
           <a
             {...stylex.props(styles.githubLink)}
             aria-label="View source on GitHub"

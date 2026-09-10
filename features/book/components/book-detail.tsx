@@ -1,6 +1,6 @@
+import { Skeleton } from '@astryxdesign/core/Skeleton';
 import * as stylex from '@stylexjs/stylex';
 import { BookOpen, Building2, CalendarDays, Globe, Hash } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
 import { StarRating } from '@/components/ui/star-rating';
 import { getBookById } from '@/features/book/book-queries';
 import { formatCount, getLanguageLabel } from '@/features/book/book-utils';
@@ -233,21 +233,21 @@ export function BookDetailSkeleton() {
         <BookCoverSkeleton />
       </section>
       <section {...stylex.props(styles.content)}>
-        <Skeleton subtle xstyle={styles.skeletonTitle} />
-        <Skeleton subtle xstyle={styles.skeletonAuthor} />
-        <Skeleton subtle xstyle={styles.skeletonRating} />
+        <Skeleton radius={1} xstyle={styles.skeletonTitle} />
+        <Skeleton radius={1} xstyle={styles.skeletonAuthor} />
+        <Skeleton radius={1} xstyle={styles.skeletonRating} />
         <section {...stylex.props(styles.skeletonDescription)}>
-          <Skeleton subtle xstyle={styles.skeletonLine} />
-          <Skeleton subtle xstyle={styles.skeletonLine} />
-          <Skeleton subtle xstyle={[styles.skeletonLine, styles.skeletonShortLine]} />
+          <Skeleton radius={1} xstyle={styles.skeletonLine} />
+          <Skeleton radius={1} xstyle={styles.skeletonLine} />
+          <Skeleton radius={1} xstyle={[styles.skeletonLine, styles.skeletonShortLine]} />
         </section>
         <section {...stylex.props(styles.facts)}>
           {Array.from({ length: 5 }).map((_, index) => (
             <section {...stylex.props(styles.fact)} key={index}>
-              <Skeleton subtle xstyle={styles.skeletonFactIcon} />
+              <Skeleton radius={1} xstyle={styles.skeletonFactIcon} />
               <section {...stylex.props(styles.skeletonFactContent)}>
-                <Skeleton subtle xstyle={styles.skeletonFactLabel} />
-                <Skeleton subtle xstyle={styles.skeletonFactValue} />
+                <Skeleton radius={1} xstyle={styles.skeletonFactLabel} />
+                <Skeleton radius={1} xstyle={styles.skeletonFactValue} />
               </section>
             </section>
           ))}

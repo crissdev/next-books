@@ -1,8 +1,8 @@
+import { Skeleton } from '@astryxdesign/core/Skeleton';
 import * as stylex from '@stylexjs/stylex';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { FastLink } from '@/components/ui/fast-link';
 import { LinkStatus } from '@/components/ui/link-status';
-import { Skeleton } from '@/components/ui/skeleton';
 import { getBooksCount } from '@/features/book/book-queries';
 import { toBookFilters, toBookQuery } from '@/features/book/book-utils';
 import { buildHref, getCurrentPage, getTotalPages, withPage } from '@/lib/url-state';
@@ -146,9 +146,9 @@ export function BookPaginationSkeleton() {
         Previous
       </span>
       <section {...stylex.props(styles.skeletonStatus)}>
-        <Skeleton subtle xstyle={[styles.skeleton, styles.statusSummary]} />
+        <Skeleton radius="rounded" xstyle={[styles.skeleton, styles.statusSummary]} />
         <span {...stylex.props(styles.divider)} />
-        <Skeleton subtle xstyle={styles.skeleton} />
+        <Skeleton radius="rounded" xstyle={styles.skeleton} />
       </section>
       <span {...stylex.props(styles.step, styles.disabled)}>
         Next

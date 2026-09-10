@@ -1,11 +1,12 @@
 'use client';
 
 import * as Ariakit from '@ariakit/react';
+import { Icon } from '@astryxdesign/core/Icon';
+import { IconButton } from '@astryxdesign/core/IconButton';
 import * as stylex from '@stylexjs/stylex';
 import { SlidersHorizontal, X } from 'lucide-react';
 import { createContext, useContext } from 'react';
-import { Button } from '@/components/ui/button';
-import { colors, radii, shadows, spacing } from '@/styles/tokens.stylex';
+import { colors, shadows, spacing } from '@/styles/tokens.stylex';
 import type { ReactNode } from 'react';
 
 const MobileBookSidebarContext = createContext<Ariakit.DialogStore | null>(null);
@@ -50,27 +51,10 @@ const styles = stylex.create({
     zIndex: 50,
   },
   dismiss: {
-    backgroundColor: {
-      ':hover': { '@media (hover: hover)': colors.card },
-      default: 'transparent',
-    },
-    border: 0,
-    borderRadius: radii.md,
-    boxShadow: { ':focus-visible': `0 0 0 2px ${colors.accent}` },
-    color: {
-      ':hover': { '@media (hover: hover)': colors.text },
-      default: colors.muted,
-    },
-    display: 'grid',
-    height: '2.25rem',
     insetInlineEnd: spacing.three,
-    outline: { ':focus-visible': 'none' },
-    placeItems: 'center',
     position: 'absolute',
     top: 'max(0.75rem, env(safe-area-inset-top))',
-    width: '2.25rem',
   },
-  dismissIcon: { height: '1.25rem', width: '1.25rem' },
   srOnly: {
     border: 0,
     clip: 'rect(0, 0, 0, 0)',
@@ -88,7 +72,6 @@ const styles = stylex.create({
       default: 'inline-flex',
     },
   },
-  triggerIcon: { height: '1rem', width: '1rem' },
 });
 
 export function MobileBookSidebar({ children, sidebar }: { children: ReactNode; sidebar: ReactNode }) {
@@ -108,9 +91,17 @@ export function MobileBookSidebar({ children, sidebar }: { children: ReactNode; 
         unmountOnHide
       >
         <Ariakit.DialogHeading {...stylex.props(styles.srOnly)}>Book filters</Ariakit.DialogHeading>
-        <Ariakit.DialogDismiss {...stylex.props(styles.dismiss)} aria-label="Close filters">
-          <X {...stylex.props(styles.dismissIcon)} />
-        </Ariakit.DialogDismiss>
+        <Ariakit.DialogDismiss
+          render={
+            <IconButton
+              icon={<Icon icon={X} size="sm" />}
+              label="Close filters"
+              size="sm"
+              variant="ghost"
+              xstyle={styles.dismiss}
+            />
+          }
+        />
         {sidebar}
       </Ariakit.Dialog>
     </MobileBookSidebarContext.Provider>
@@ -122,14 +113,17 @@ export function MobileBookSidebarTrigger() {
   if (!store) return null;
 
   return (
-    <Button
-      aria-label="Open filters"
-      render={<Ariakit.DialogDisclosure store={store} />}
-      size="icon"
-      variant="ghost"
-      xstyle={styles.trigger}
-    >
-      <SlidersHorizontal {...stylex.props(styles.triggerIcon)} />
-    </Button>
+    <Ariakit.DialogDisclosure
+      render={
+        <IconButton
+          icon={<Icon icon={SlidersHorizontal} size="sm" />}
+          label="Open filters"
+          size="sm"
+          variant="ghost"
+          xstyle={styles.trigger}
+        />
+      }
+      store={store}
+    />
   );
 }

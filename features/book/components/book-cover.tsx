@@ -1,7 +1,7 @@
+import { Skeleton } from '@astryxdesign/core/Skeleton';
 import * as stylex from '@stylexjs/stylex';
 import Image from 'next/image';
 import { createPngDataUri } from 'unlazy/thumbhash';
-import { Skeleton } from '@/components/ui/skeleton';
 import { EMPTY_IMAGE_URL, getLargeBookImageUrl } from '@/features/book/book-constants';
 import { colors, radii } from '@/styles/tokens.stylex';
 import type { StyleXStyles } from '@stylexjs/stylex';
@@ -45,5 +45,5 @@ export function BookCover({ priority, sizes, src, thumbhash, title, xstyle }: Pr
 }
 
 export function BookCoverSkeleton({ xstyle }: { xstyle?: StyleXStyles }) {
-  return <Skeleton subtle xstyle={[styles.cover, xstyle]} />;
+  return <Skeleton radius={1} xstyle={[styles.cover, xstyle]} />;
 }

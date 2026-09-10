@@ -34,7 +34,8 @@ test('the language filter drives the URL', async ({ page }) => {
   await page.goto('/');
   const language = page.getByLabel('Language');
   await language.waitFor({ state: 'visible' });
-  await language.selectOption('fre');
+  await language.click();
+  await page.getByRole('option', { name: 'French' }).click();
   await expect(page).toHaveURL(/language=fre/);
 });
 

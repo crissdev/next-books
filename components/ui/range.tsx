@@ -1,87 +1,53 @@
-import * as stylex from '@stylexjs/stylex';
-import { colors, radii, spacing, typography } from '@/styles/tokens.stylex';
+import { Slider } from '@astryxdesign/core/Slider';
+import { Stack } from '@astryxdesign/core/Stack';
+import { Text } from '@astryxdesign/core/Text';
 import type { StyleXStyles } from '@stylexjs/stylex';
-import type { ComponentProps, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-type Props = Omit<
-  ComponentProps<'input'>,
-  'className' | 'max' | 'min' | 'onChange' | 'step' | 'style' | 'type' | 'value'
-> & {
+type Props = {
   onValueChange: (value: number) => void;
   label: string;
   value: number;
   values: readonly [number, ...number[]];
   readout?: ReactNode;
-  hint?: ReactNode;
+  hint?: readonly [ReactNode, ReactNode];
+  id?: string;
+  disabled?: boolean;
   xstyle?: StyleXStyles;
 };
 
-const styles = stylex.create({
-  heading: {
-    alignItems: 'baseline',
-    display: 'flex',
-    gap: spacing.two,
-    justifyContent: 'space-between',
-  },
-  hint: {
-    color: colors.muted,
-    display: 'flex',
-    fontSize: '0.6875rem',
-    fontVariantNumeric: 'tabular-nums',
-    justifyContent: 'space-between',
-  },
-  input: {
-    borderRadius: radii.full,
-    boxShadow: { ':focus-visible': `0 0 0 2px ${colors.focusAccent}` },
-    cursor: 'pointer',
-    outline: { ':focus-visible': 'none' },
-  },
-  label: {
-    color: colors.muted,
-    fontSize: typography.tiny,
-    fontWeight: 600,
-    letterSpacing: '0.04em',
-    textTransform: 'uppercase',
-  },
-  readout: {
-    color: colors.text,
-    fontSize: typography.small,
-    fontVariantNumeric: 'tabular-nums',
-    fontWeight: 500,
-  },
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: spacing.two,
-  },
-});
-
-export function Range({ hint, id, label, onValueChange, readout, value, values, xstyle, ...props }: Props) {
+export function Range({ disabled, hint, id, label, onValueChange, readout, value, values, xstyle }: Props) {
   const selectedIndex = values.reduce(
     (closest, option, index) => (Math.abs(option - value) < Math.abs(values[closest] - value) ? index : closest),
     0,
   );
 
   return (
-    <section {...stylex.props(styles.root)}>
-      <header {...stylex.props(styles.heading)}>
-        <label {...stylex.props(styles.label)} htmlFor={id}>
-          {label}
-        </label>
-        <span {...stylex.props(styles.readout)}>{readout ?? value}</span>
-      </header>
-      <input
-        {...stylex.props(styles.input, xstyle)}
+    <Stack gap={1.5} width="100%">
+      <Slider
+        formatValue={() => String(readout ?? value)}
         id={id}
+        isDisabled={disabled}
+        label={label}
         max={values.length - 1}
         min={0}
-        onChange={event => onValueChange(values[Number(event.currentTarget.value)])}
+        onChange={(index: number) => onValueChange(values[index])}
         step={1}
-        type="range"
         value={selectedIndex}
-        {...props}
+        valueDisplay="text"
+        width="100%"
+        xstyle={xstyle}
       />
-      {hint ? <footer {...stylex.props(styles.hint)}>{hint}</footer> : null}
-    </section>
+      {hint ? (
+        <Stack direction="horizontal" justify="between" width="100%">
+          <Text color="secondary" hasTabularNumbers type="supporting">
+            {hint[0]}
+          </Text>
+          <Text color="secondary" hasTabularNumbers type="supporting">
+            {hint[1]}
+          </Text>
+        </Stack>
+      ) : null}
+    </Stack>
   );
 }

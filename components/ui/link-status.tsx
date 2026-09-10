@@ -1,8 +1,8 @@
 'use client';
 
+import { Spinner } from '@astryxdesign/core/Spinner';
 import * as stylex from '@stylexjs/stylex';
 import { useLinkStatus } from 'next/link';
-import { Spinner } from '@/components/ui/spinner';
 import { spacing } from '@/styles/tokens.stylex';
 import type { StyleXStyles } from '@stylexjs/stylex';
 import type { ReactNode } from 'react';
@@ -45,10 +45,6 @@ const styles = stylex.create({
     visibility: 'hidden',
     width: '0.875rem',
   },
-  spinner: {
-    height: '0.875rem',
-    width: '0.875rem',
-  },
 });
 
 export function LinkStatus({ children, hint = 'end', xstyle }: Props) {
@@ -56,7 +52,7 @@ export function LinkStatus({ children, hint = 'end', xstyle }: Props) {
 
   const slot = (
     <span {...stylex.props(styles.slot, pending && styles.pending)} aria-hidden>
-      {pending ? <Spinner xstyle={styles.spinner} /> : null}
+      {pending ? <Spinner shade="subtle" size="sm" /> : null}
     </span>
   );
 
