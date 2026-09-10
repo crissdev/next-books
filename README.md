@@ -29,7 +29,7 @@ pnpm install
 pnpm dev
 ```
 
-`POSTGRES_URL` is optional. Without it the app serves a small preview catalog.
+`DATABASE_URL` is optional. Without it the app serves a small preview catalog.
 
 ```bash
 pnpm lint
@@ -55,9 +55,11 @@ CREATE EXTENSION IF NOT EXISTS unaccent;
 
 The source dataset is available from the [UCSD Book Graph project](https://mengtingwan.github.io/data/goodreads.html).
 
-Set `POSTGRES_URL`, then create the schema and load the bundled four-book sample:
+Copy `.env.sample` to `.env`, then start the local PostgreSQL container, create
+the schema, and load the bundled four-book sample:
 
 ```bash
+cp .env.sample .env
 pnpm db:setup
 ```
 

@@ -21,8 +21,8 @@ export default defineConfig({
   },
   webServer: {
     command: `pnpm exec next dev --hostname 127.0.0.1 --port ${port}`,
-    // Blanking POSTGRES_URL runs the suite on the generated preview catalog.
-    env: { POSTGRES_URL: '' },
+    // Blanking DATABASE_URL runs the suite on the generated preview catalog.
+    env: { DATABASE_URL: '' },
     // One dev server per directory: if you have one, set PLAYWRIGHT_BASE_URL to it.
     reuseExistingServer: true,
     stdout: 'pipe',

@@ -1,17 +1,21 @@
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
 
-const connectionString = process.env.POSTGRES_URL;
+const connectionString = process.env.DATABASE_URL;
 
-const sql = connectionString ? neon(connectionString) : null;
-export const db = sql ? drizzle(sql) : null;
+const pool = connectionString ? new Pool({ connectionString }) : null;
+export const db = pool ? drizzle(pool) : null;
 
-export function requireSql() {
-  if (!sql) throw new Error('POSTGRES_URL environment variable is not set');
-  return sql;
+export function requirePool() {
+  if (!pool) throw new Error('DATABASE_URL environment variable is not set');
+  return pool;
 }
 
 export function requireDb() {
-  if (!db) throw new Error('POSTGRES_URL environment variable is not set');
+  if (!db) throw new Error('DATABASE_URL environment variable is not set');
   return db;
+}
+
+export async function closeDb() {
+  await pool?.end();
 }

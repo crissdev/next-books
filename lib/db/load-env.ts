@@ -1,3 +1,3 @@
-import dotenv from 'dotenv';
+import { loadEnvConfig } from '@next/env';
 
-dotenv.config({ path: ['.env.local', '.env'], quiet: true });
+loadEnvConfig(process.cwd());

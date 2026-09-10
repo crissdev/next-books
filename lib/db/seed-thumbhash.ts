@@ -4,9 +4,9 @@ import pLimit from 'p-limit';
 import sharp from 'sharp';
 import * as ThumbHash from 'thumbhash';
 import { EMPTY_IMAGE_URL } from '@/features/book/book-constants';
-import { requireSql } from './drizzle';
-import { processEntities } from './seed-utils';
-import type { NeonQueryFunction } from '@neondatabase/serverless';
+import { closeDb, requirePool } from './drizzle';
+import { processEntities, withTransaction } from './seed-utils';
+import type { Pool } from 'pg';
 
 const BATCH_SIZE = 900;
 const CHECKPOINT_FILE = 'thumbhash_update_checkpoint.json';
@@ -62,7 +62,7 @@ async function processBook(book: BookData): Promise<[string, string] | null> {
   return null;
 }
 
-async function batchUpdateThumbHash(batch: BookData[], sqlQuery: NeonQueryFunction<false, false>) {
+async function batchUpdateThumbHash(batch: BookData[], pool: Pool) {
   const updateThumbhashQuery = `
     UPDATE books
     SET thumbhash = $1
@@ -71,28 +71,32 @@ async function batchUpdateThumbHash(batch: BookData[], sqlQuery: NeonQueryFuncti
 
   const processedBooks = await Promise.all(batch.map(book => limit(() => processBook(book))));
 
-  const queries = processedBooks
-    .filter((result): result is [string, string] => result !== null)
-    .map(([thumbHash, imageUrl]) => sqlQuery.query(updateThumbhashQuery, [thumbHash, imageUrl]));
-
-  return sqlQuery.transaction(queries);
+  return withTransaction(pool, async client => {
+    for (const [thumbHash, imageUrl] of processedBooks.filter(
+      (result): result is [string, string] => result !== null,
+    )) {
+      await client.query(updateThumbhashQuery, [thumbHash, imageUrl]);
+    }
+  });
 }
 
 async function main() {
   try {
-    const sql = requireSql();
+    const pool = requirePool();
     const bookCount = await processEntities<BookData>(
       path.resolve('./lib/db/books.json'),
       CHECKPOINT_FILE,
       BATCH_SIZE,
       batchUpdateThumbHash,
-      sql,
+      pool,
       TOTAL_BOOKS,
     );
     console.log(`Updated thumbhash for ${bookCount.toLocaleString()} / ${TOTAL_BOOKS.toLocaleString()} books`);
   } catch (error) {
     console.error('Error updating thumbhash:', error);
     process.exitCode = 1;
+  } finally {
+    await closeDb();
   }
 }
 

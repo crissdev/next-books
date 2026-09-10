@@ -1,7 +1,7 @@
 import fs from 'fs';
 import readline from 'readline';
 import { createGunzip } from 'zlib';
-import type { NeonQueryFunction } from '@neondatabase/serverless';
+import type { Pool, PoolClient } from 'pg';
 
 export async function saveCheckpoint(checkpointFile: string, processedLines: number) {
   await fs.promises.writeFile(checkpointFile, JSON.stringify({ processedLines }), 'utf8');
@@ -20,8 +20,8 @@ export async function processEntities<T>(
   filePath: string,
   checkpointFile: string,
   batchSize: number,
-  batchInsertFunction: (batch: T[], sqlQuery: NeonQueryFunction<false, false>) => Promise<unknown>,
-  sqlQuery: NeonQueryFunction<false, false>,
+  batchInsertFunction: (batch: T[], pool: Pool) => Promise<unknown>,
+  pool: Pool,
   totalEntities: number,
 ): Promise<number> {
   const usesCheckpoints = totalEntities > batchSize;
@@ -57,7 +57,7 @@ export async function processEntities<T>(
 
     if (batch.length >= batchSize) {
       const batchStartTime = Date.now();
-      await batchInsertFunction(batch, sqlQuery);
+      await batchInsertFunction(batch, pool);
       const batchEndTime = Date.now();
       batch = [];
       if (usesCheckpoints) {
@@ -77,7 +77,7 @@ export async function processEntities<T>(
   }
 
   if (batch.length > 0) {
-    await batchInsertFunction(batch, sqlQuery);
+    await batchInsertFunction(batch, pool);
     if (usesCheckpoints) {
       await saveCheckpoint(checkpointFile, processedLines);
     }
@@ -87,4 +87,20 @@ export async function processEntities<T>(
   console.log(`Total processing time: ${(totalSeconds / 60).toFixed(2)} minutes`);
 
   return processedLines;
+}
+
+export async function withTransaction<T>(pool: Pool, callback: (client: PoolClient) => Promise<T>): Promise<T> {
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+    const result = await callback(client);
+    await client.query('COMMIT');
+    return result;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 }
