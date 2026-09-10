@@ -1,17 +1,11 @@
 import { instant } from '@next/playwright';
 import { expect, test } from '@playwright/test';
-import type { Locator } from '@playwright/test';
-
-async function pressLink(link: Locator) {
-  await link.dispatchEvent('mousedown', { button: 0 });
-}
 
 test('a book navigation reveals its shell immediately', async ({ page }) => {
   await page.goto('/');
-  const book = page.getByRole('link', { name: /W\.C\. Fields/ });
 
   await instant(page, async () => {
-    await pressLink(book);
+    await page.getByRole('link', { name: /W\.C\. Fields/ }).click();
     await page.waitForURL(url => url.pathname === '/5333265');
     await expect(page.getByText('Back to books')).toBeVisible();
   });
@@ -29,11 +23,10 @@ test('the back button works on a direct book visit', async ({ page }) => {
 
 test('hover intent warms the book page before the click', async ({ page }) => {
   await page.goto('/');
-  const book = page.getByRole('link', { name: /Unschooled Wizard/ });
 
-  await book.hover();
+  await page.getByRole('link', { name: /Unschooled Wizard/ }).hover();
   await instant(page, async () => {
-    await pressLink(book);
+    await page.getByRole('link', { name: /Unschooled Wizard/ }).click();
     await page.waitForURL(url => url.pathname === '/7327624');
     await expect(page.getByRole('heading', { name: 'The Unschooled Wizard' })).toBeVisible();
   });
@@ -41,15 +34,12 @@ test('hover intent warms the book page before the click', async ({ page }) => {
 
 test('a book page keeps the catalog filters for the back navigation', async ({ page }) => {
   await page.goto('/?search=wizard');
-  const book = page.getByRole('link', { name: /Unschooled Wizard/ });
 
-  await pressLink(book);
+  await page.getByRole('link', { name: /Unschooled Wizard/ }).click();
   await expect(page.getByRole('heading', { name: 'The Unschooled Wizard' })).toBeVisible();
 
-  const back = page.getByRole('button', { name: 'Back to books' });
-
   await instant(page, async () => {
-    await back.click();
+    await page.getByRole('button', { name: 'Back to books' }).click();
     await page.waitForURL('/?search=wizard');
     await expect(page.getByRole('link', { name: /Unschooled Wizard/ })).toBeVisible();
   });
@@ -65,7 +55,7 @@ test('a later catalog page is restored from the visited router cache', async ({ 
     .first();
   const bookName = await book.locator('img').getAttribute('alt');
 
-  await pressLink(book);
+  await book.click();
   const back = page.getByRole('button', { name: 'Back to books' });
   await expect(back).toBeVisible();
 

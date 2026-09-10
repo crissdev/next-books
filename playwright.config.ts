@@ -27,6 +27,5 @@ export default defineConfig({
     reuseExistingServer: true,
     stdout: 'pipe',
     url: baseURL,
-  },
-  workers: 1,
+  }
 });
